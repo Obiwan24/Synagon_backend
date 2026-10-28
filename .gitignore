@@ -1,0 +1,49 @@
+HELP.md
+# Compilacion y Gradle
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+# Configuración local de rutas de máquina (CRITICO en Android Studio para cambiar entre Mac y PC)
+local.properties
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+.DS_Store
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+# Entornos de iOS / Xcode locales
+iosApp/Pods/
+iosApp/build/
+*.xcuserdata
+
+# Variables de entorno privadas (si se crean en el futuro)
+.env

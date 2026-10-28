@@ -1,0 +1,14 @@
+# Normalizar saltos de línea automáticamente entre macOS y Windows
+* text=auto eol=lf
+
+# Forzar LF siempre en scripts de compilación y migraciones SQL (evita que Flyway falle por checksum en otro PC)
+*.sh text eol=lf
+gradlew text eol=lf
+*.sql text eol=lf
+*.kt text eol=lf
+*.kts text eol=lf
+*.java text eol=lf
+*.yml text eol=lf
+
+# Forzar CRLF solo en ejecutables de Windows
+*.bat text eol=crlf

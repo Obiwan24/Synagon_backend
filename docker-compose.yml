@@ -1,0 +1,16 @@
+services:
+  postgres-synagon:
+    image: postgres:16-alpine
+    container_name: synagon_db
+    environment:
+      POSTGRES_DB: synagon_db
+      POSTGRES_USER: synagon_admin
+      POSTGRES_PASSWORD: synagon_secret_2026
+    ports:
+      - "5432:5432"
+    volumes:
+      - synagon_pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  synagon_pgdata:
