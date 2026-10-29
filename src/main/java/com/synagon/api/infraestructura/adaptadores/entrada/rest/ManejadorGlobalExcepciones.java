@@ -1,6 +1,7 @@
 package com.synagon.api.infraestructura.adaptadores.entrada.rest;
 
 import com.synagon.api.dominio.excepciones.ConvocatoriaInvalidaExcepcion;
+import com.synagon.api.dominio.excepciones.EmailYaRegistradoExcepcion;
 import com.synagon.api.dominio.excepciones.RecursoNoEncontradoExcepcion;
 import com.synagon.api.dominio.excepciones.ReglaNegocioExcepcion;
 import com.synagon.api.dominio.excepciones.ResultadoPadelIlegalExcepcion;
@@ -38,6 +39,20 @@ public class ManejadorGlobalExcepciones {
                 "Recurso no encontrado",
                 excepcion.getMessage(),
                 "https://synagon.com/errores/recurso-no-encontrado",
+                peticion
+        );
+    }
+
+    @ExceptionHandler(EmailYaRegistradoExcepcion.class)
+    public ProblemDetail manejarEmailYaRegistrado(
+            EmailYaRegistradoExcepcion excepcion,
+            HttpServletRequest peticion
+    ) {
+        return construirDetalleProblema(
+                HttpStatus.CONFLICT,
+                "Correo electrónico ya registrado",
+                excepcion.getMessage(),
+                "https://synagon.com/errores/email-ya-registrado",
                 peticion
         );
     }
@@ -108,10 +123,14 @@ public class ManejadorGlobalExcepciones {
             erroresCampos.putIfAbsent(error.getField(), error.getDefaultMessage());
         }
 
+        String mensajeDescriptivo = erroresCampos.isEmpty()
+                ? "Uno o más campos enviados no superan las validaciones requeridas."
+                : String.join(" ", erroresCampos.values());
+
         ProblemDetail detalle = construirDetalleProblema(
                 HttpStatus.BAD_REQUEST,
                 "Datos de petición inválidos",
-                "Uno o más campos enviados no superan las validaciones requeridas.",
+                mensajeDescriptivo,
                 "https://synagon.com/errores/validacion-entrada",
                 peticion
         );
