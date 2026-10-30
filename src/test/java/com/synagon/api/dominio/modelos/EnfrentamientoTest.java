@@ -1,6 +1,7 @@
 package com.synagon.api.dominio.modelos;
 
 import com.synagon.api.dominio.excepciones.ConvocatoriaInvalidaExcepcion;
+import com.synagon.api.dominio.excepciones.ReglaNegocioExcepcion;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -89,6 +90,56 @@ class EnfrentamientoTest {
         assertEquals(EstadoEnfrentamiento.FINALIZADO, cerrado.obtenerEstado());
         assertEquals(2, cerrado.obtenerPuntosLocal());
         assertEquals(1, cerrado.obtenerPuntosVisitante());
+    }
+
+    @Test
+    @DisplayName("Sede efectiva de juego devuelve la sede alternativa si existe o la sede oficial en caso contrario")
+    void debeCalcularSedeEfectivaJuegoYConservarSedeOficial() {
+        Enfrentamiento inicial = new Enfrentamiento(
+                UUID.randomUUID(),
+                divisionId,
+                localId,
+                visitanteId,
+                1,
+                EstadoEnfrentamiento.FECHA_FIJADA,
+                LocalDateTime.now().plusDays(3),
+                "Ciudad Deportiva Luis del Sol",
+                null,
+                null,
+                0,
+                0,
+                false,
+                List.of(),
+                List.of(),
+                List.of()
+        );
+
+        assertNull(inicial.obtenerSedeAlternativaJornada());
+        assertEquals("Ciudad Deportiva Luis del Sol", inicial.obtenerSedeEfectivaJuego());
+
+        Enfrentamiento conAlternativa = inicial.actualizarSedeAlternativaJornada("  Pádel Indoor Cartuja  ");
+        assertEquals("Ciudad Deportiva Luis del Sol", conAlternativa.obtenerPistas());
+        assertEquals("Pádel Indoor Cartuja", conAlternativa.obtenerSedeAlternativaJornada());
+        assertEquals("Pádel Indoor Cartuja", conAlternativa.obtenerSedeEfectivaJuego());
+
+        Enfrentamiento restaurado = conAlternativa.actualizarSedeAlternativaJornada("   ");
+        assertNull(restaurado.obtenerSedeAlternativaJornada());
+        assertEquals("Ciudad Deportiva Luis del Sol", restaurado.obtenerSedeEfectivaJuego());
+    }
+
+    @Test
+    @DisplayName("No permite cambiar la sede alternativa si el enfrentamiento ya está finalizado")
+    void debeRechazarCambioDeSedeEnEnfrentamientoFinalizado() {
+        Enfrentamiento enfrentamiento = Enfrentamiento.crear(divisionId, localId, visitanteId, 1);
+        List<PartidoPareja> partidos = crearPartidosValidos(enfrentamiento.obtenerId());
+        PartidoPareja part1 = partidos.get(0).registrarResultado(6, 4, 6, 3, null, null);
+        PartidoPareja part2 = partidos.get(1).registrarResultado(6, 2, 6, 4, null, null);
+        PartidoPareja part3 = partidos.get(2).registrarResultado(3, 6, 2, 6, null, null);
+        Enfrentamiento finalizado = enfrentamiento.confirmarActa(List.of(part1, part2, part3));
+
+        assertThrows(ReglaNegocioExcepcion.class, () ->
+                finalizado.actualizarSedeAlternativaJornada("Pistas Cubiertas Aljarafe")
+        );
     }
 
     private List<PartidoPareja> crearPartidosValidos(UUID enfrentamientoId) {

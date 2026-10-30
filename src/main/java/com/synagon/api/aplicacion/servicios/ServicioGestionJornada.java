@@ -17,7 +17,8 @@ import java.util.UUID;
 
 /**
  * Servicio de aplicación transaccional que orquesta la negociación de fechas,
- * votación de disponibilidad, fijación de fecha definitiva y cierre de convocatoria/alineación.
+ * votación de disponibilidad, fijación de fecha definitiva, cambios de sede de jornada
+ * y cierre de convocatoria/alineación.
  */
 @Service
 @Transactional
@@ -111,6 +112,38 @@ public class ServicioGestionJornada implements GestionJornadaCasoUso {
         }
 
         Enfrentamiento actualizado = enfrentamiento.cerrarConvocatoriaYAlineacion(listaTresParejas);
+        return repositorioEnfrentamiento.guardar(actualizado);
+    }
+
+    @Override
+    public Enfrentamiento actualizarSedeJornada(
+            UUID enfrentamientoId,
+            UUID capitanId,
+            String nuevaSedeAlternativa
+    ) {
+        if (capitanId == null) {
+            throw new IllegalArgumentException("El identificador del capitán es obligatorio.");
+        }
+
+        Enfrentamiento enfrentamiento = obtenerEnfrentamientoPorId(enfrentamientoId);
+
+        if (!repositorioEnfrentamiento.existeUsuarioPorId(capitanId)) {
+            throw new RecursoNoEncontradoExcepcion(
+                    String.format("No existe ningún usuario registrado con id %s.", capitanId)
+            );
+        }
+
+        if (!repositorioEnfrentamiento.esCapitanDeAlgunEquipoDelEnfrentamiento(
+                capitanId,
+                enfrentamiento.obtenerEquipoLocalId(),
+                enfrentamiento.obtenerEquipoVisitanteId()
+        )) {
+            throw new ReglaNegocioExcepcion(
+                    "Solo un capitán activo de los equipos del enfrentamiento puede actualizar la sede alternativa de la jornada."
+            );
+        }
+
+        Enfrentamiento actualizado = enfrentamiento.actualizarSedeAlternativaJornada(nuevaSedeAlternativa);
         return repositorioEnfrentamiento.guardar(actualizado);
     }
 }

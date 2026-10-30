@@ -50,6 +50,9 @@ public class EntidadEnfrentamiento {
     @Column(name = "pistas", length = 150)
     private String pistas;
 
+    @Column(name = "sede_alternativa_jornada", length = 150)
+    private String sedeAlternativaJornada;
+
     @Column(name = "url_foto_acta", length = 500)
     private String urlFotoActa;
 
@@ -93,6 +96,7 @@ public class EntidadEnfrentamiento {
             EstadoEnfrentamiento estado,
             OffsetDateTime fechaDefinitiva,
             String pistas,
+            String sedeAlternativaJornada,
             String urlFotoActa,
             int puntosLocal,
             int puntosVisitante,
@@ -108,6 +112,7 @@ public class EntidadEnfrentamiento {
         this.estado = Objects.requireNonNull(estado);
         this.fechaDefinitiva = fechaDefinitiva;
         this.pistas = pistas;
+        this.sedeAlternativaJornada = sedeAlternativaJornada;
         this.urlFotoActa = urlFotoActa;
         this.puntosLocal = puntosLocal;
         this.puntosVisitante = puntosVisitante;
@@ -124,6 +129,7 @@ public class EntidadEnfrentamiento {
     public EstadoEnfrentamiento obtenerEstado() { return estado; }
     public OffsetDateTime obtenerFechaDefinitiva() { return fechaDefinitiva; }
     public String obtenerPistas() { return pistas; }
+    public String obtenerSedeAlternativaJornada() { return sedeAlternativaJornada; }
     public String obtenerUrlFotoActa() { return urlFotoActa; }
     public int obtenerPuntosLocal() { return puntosLocal; }
     public int obtenerPuntosVisitante() { return puntosVisitante; }
@@ -138,6 +144,7 @@ public class EntidadEnfrentamiento {
             EstadoEnfrentamiento estado,
             OffsetDateTime fechaDefinitiva,
             String pistas,
+            String sedeAlternativaJornada,
             String urlFotoActa,
             int puntosLocal,
             int puntosVisitante,
@@ -147,6 +154,7 @@ public class EntidadEnfrentamiento {
         this.estado = Objects.requireNonNull(estado);
         this.fechaDefinitiva = fechaDefinitiva;
         this.pistas = pistas;
+        this.sedeAlternativaJornada = sedeAlternativaJornada;
         this.urlFotoActa = urlFotoActa;
         this.puntosLocal = puntosLocal;
         this.puntosVisitante = puntosVisitante;

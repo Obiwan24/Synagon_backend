@@ -72,4 +72,23 @@ public interface RepositorioJpaEnfrentamiento extends JpaRepository<EntidadEnfre
             @Param("equipoLocalId") UUID equipoLocalId,
             @Param("equipoVisitanteId") UUID equipoVisitanteId
     );
+
+    @Query(value = """
+            SELECT EXISTS(
+                SELECT 1 FROM equipos eq
+                WHERE eq.id IN (:equipoLocalId, :equipoVisitanteId)
+                  AND eq.capitan_id = :capitanId
+                UNION ALL
+                SELECT 1 FROM miembros_equipo me
+                WHERE me.equipo_id IN (:equipoLocalId, :equipoVisitanteId)
+                  AND me.usuario_id = :capitanId
+                  AND me.es_capitan = TRUE
+                  AND me.activo = TRUE
+            )
+            """, nativeQuery = true)
+    boolean esCapitanActivoDeAlgunEquipo(
+            @Param("capitanId") UUID capitanId,
+            @Param("equipoLocalId") UUID equipoLocalId,
+            @Param("equipoVisitanteId") UUID equipoVisitanteId
+    );
 }

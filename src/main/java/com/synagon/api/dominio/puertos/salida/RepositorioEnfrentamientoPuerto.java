@@ -17,4 +17,6 @@ public interface RepositorioEnfrentamientoPuerto {
     boolean existeUsuarioPorId(UUID usuarioId);
 
     boolean perteneceJugadorAAlgunEquipo(UUID jugadorId, UUID equipoLocalId, UUID equipoVisitanteId);
+
+    boolean esCapitanDeAlgunEquipoDelEnfrentamiento(UUID capitanId, UUID equipoLocalId, UUID equipoVisitanteId);
 }

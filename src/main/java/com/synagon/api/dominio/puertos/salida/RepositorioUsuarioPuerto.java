@@ -12,7 +12,23 @@ public interface RepositorioUsuarioPuerto {
 
     boolean existePorEmail(String email);
 
+    Optional<Usuario> obtenerPorId(UUID usuarioId);
+
+    Optional<Usuario> buscarPorEmail(String email);
+
+    boolean existePorDniExcluyendoUsuario(String dni, UUID usuarioExcluidoId);
+
     Optional<UUID> obtenerEquipoPorDefectoId();
 
+    Usuario guardar(Usuario usuario);
+
     Usuario guardarConMembresiaEquipo(Usuario usuario, UUID equipoId);
+
+    boolean existeEquipoPorId(UUID equipoId);
+
+    boolean esCapitanActivoDeEquipo(UUID usuarioId, UUID equipoId);
+
+    boolean esMiembroActivoDeEquipo(UUID usuarioId, UUID equipoId);
+
+    void vincularJugadorAEquipo(UUID usuarioId, UUID equipoId);
 }

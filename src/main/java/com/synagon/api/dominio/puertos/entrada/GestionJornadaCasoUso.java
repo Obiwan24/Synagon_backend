@@ -10,7 +10,7 @@ import java.util.UUID;
 
 /**
  * Puerto de entrada (casos de uso) para la gestión integral de fechas,
- * votaciones de disponibilidad, convocatorias y alineación de una jornada.
+ * votaciones de disponibilidad, convocatorias, sede alternativa y alineación de una jornada.
  */
 public interface GestionJornadaCasoUso {
 
@@ -28,4 +28,10 @@ public interface GestionJornadaCasoUso {
     Enfrentamiento fijarFechaDefinitiva(UUID enfrentamientoId, UUID propuestaFechaElegidaId);
 
     Enfrentamiento cerrarConvocatoriaYAlineacion(UUID enfrentamientoId, List<PartidoPareja> listaTresParejas);
+
+    Enfrentamiento actualizarSedeJornada(
+            UUID enfrentamientoId,
+            UUID capitanId,
+            String nuevaSedeAlternativa
+    );
 }

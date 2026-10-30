@@ -6,5 +6,6 @@ package com.synagon.api.dominio.modelos;
 public enum RolUsuario {
     JUGADOR,
     CAPITAN,
+    PRESIDENTE,
     ADMINISTRADOR
 }

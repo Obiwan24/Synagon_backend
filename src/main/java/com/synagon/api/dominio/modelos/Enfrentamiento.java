@@ -19,8 +19,8 @@ import java.util.UUID;
 
 /**
  * Modelo de dominio inmutable que representa un enfrentamiento oficial entre dos equipos en una jornada.
- * Gestiona la negociación de fechas, la votación de disponibilidades, la validación de convocatorias
- * de 6 jugadores únicos en 3 parejas y el registro/cierre del acta arbitral con validación de tanteo legal de pádel.
+ * Gestiona la negociación de fechas, la votación de disponibilidades, la sede alternativa de jornada,
+ * la validación de convocatorias de 6 jugadores únicos en 3 parejas y el registro/cierre del acta arbitral.
  */
 public final class Enfrentamiento {
 
@@ -32,6 +32,7 @@ public final class Enfrentamiento {
     private final EstadoEnfrentamiento estado;
     private final LocalDateTime fechaDefinitiva;
     private final String pistas;
+    private final String sedeAlternativaJornada;
     private final String urlFotoActa;
     private final int puntosLocal;
     private final int puntosVisitante;
@@ -66,6 +67,7 @@ public final class Enfrentamiento {
                 fechaDefinitiva,
                 pistas,
                 null,
+                null,
                 puntosLocal,
                 puntosVisitante,
                 actaConfirmada,
@@ -92,6 +94,44 @@ public final class Enfrentamiento {
             List<DisponibilidadJugador> disponibilidades,
             List<PartidoPareja> partidos
     ) {
+        this(
+                id,
+                divisionId,
+                equipoLocalId,
+                equipoVisitanteId,
+                numeroJornada,
+                estado,
+                fechaDefinitiva,
+                pistas,
+                null,
+                urlFotoActa,
+                puntosLocal,
+                puntosVisitante,
+                actaConfirmada,
+                propuestasFecha,
+                disponibilidades,
+                partidos
+        );
+    }
+
+    public Enfrentamiento(
+            UUID id,
+            UUID divisionId,
+            UUID equipoLocalId,
+            UUID equipoVisitanteId,
+            int numeroJornada,
+            EstadoEnfrentamiento estado,
+            LocalDateTime fechaDefinitiva,
+            String pistas,
+            String sedeAlternativaJornada,
+            String urlFotoActa,
+            int puntosLocal,
+            int puntosVisitante,
+            boolean actaConfirmada,
+            List<PropuestaFecha> propuestasFecha,
+            List<DisponibilidadJugador> disponibilidades,
+            List<PartidoPareja> partidos
+    ) {
         this.id = id != null ? id : UUID.randomUUID();
         this.divisionId = Objects.requireNonNull(divisionId, "El id de la división no puede ser nulo.");
         this.equipoLocalId = Objects.requireNonNull(equipoLocalId, "El equipo local es obligatorio.");
@@ -108,6 +148,9 @@ public final class Enfrentamiento {
         this.estado = estado != null ? estado : EstadoEnfrentamiento.PENDIENTE_FECHA;
         this.fechaDefinitiva = fechaDefinitiva;
         this.pistas = pistas;
+        this.sedeAlternativaJornada = sedeAlternativaJornada != null && !sedeAlternativaJornada.isBlank()
+                ? sedeAlternativaJornada.trim()
+                : null;
         this.urlFotoActa = urlFotoActa;
         this.puntosLocal = Math.max(0, puntosLocal);
         this.puntosVisitante = Math.max(0, puntosVisitante);
@@ -133,12 +176,53 @@ public final class Enfrentamiento {
                 null,
                 null,
                 null,
+                null,
                 0,
                 0,
                 false,
                 List.of(),
                 List.of(),
                 List.of()
+        );
+    }
+
+    /**
+     * Registra o limpia una sede alternativa para la jornada actual sin alterar la sede oficial del equipo local.
+     */
+    public Enfrentamiento actualizarSedeAlternativaJornada(String nuevaSedeAlternativa) {
+        if (this.estado == EstadoEnfrentamiento.FINALIZADO
+                || this.estado == EstadoEnfrentamiento.FINALIZADO_CONFIRMADO
+                || this.estado == EstadoEnfrentamiento.CANCELADO) {
+            throw new ReglaNegocioExcepcion(
+                    String.format("No se puede actualizar la sede alternativa cuando el enfrentamiento está en estado %s.", this.estado)
+            );
+        }
+
+        String sedeNormalizada = nuevaSedeAlternativa != null && !nuevaSedeAlternativa.isBlank()
+                ? nuevaSedeAlternativa.trim()
+                : null;
+
+        if (sedeNormalizada != null && sedeNormalizada.length() > 150) {
+            throw new IllegalArgumentException("La sede alternativa de la jornada no puede superar los 150 caracteres.");
+        }
+
+        return new Enfrentamiento(
+                this.id,
+                this.divisionId,
+                this.equipoLocalId,
+                this.equipoVisitanteId,
+                this.numeroJornada,
+                this.estado,
+                this.fechaDefinitiva,
+                this.pistas,
+                sedeNormalizada,
+                this.urlFotoActa,
+                this.puntosLocal,
+                this.puntosVisitante,
+                this.actaConfirmada,
+                this.propuestasFecha,
+                this.disponibilidades,
+                this.partidos
         );
     }
 
@@ -183,6 +267,7 @@ public final class Enfrentamiento {
                 EstadoEnfrentamiento.VOTACION_DISPONIBILIDAD_ABIERTA,
                 null,
                 this.pistas,
+                this.sedeAlternativaJornada,
                 this.urlFotoActa,
                 this.puntosLocal,
                 this.puntosVisitante,
@@ -218,6 +303,7 @@ public final class Enfrentamiento {
                 this.estado,
                 this.fechaDefinitiva,
                 this.pistas,
+                this.sedeAlternativaJornada,
                 this.urlFotoActa,
                 this.puntosLocal,
                 this.puntosVisitante,
@@ -288,6 +374,7 @@ public final class Enfrentamiento {
                 this.estado,
                 this.fechaDefinitiva,
                 this.pistas,
+                this.sedeAlternativaJornada,
                 this.urlFotoActa,
                 this.puntosLocal,
                 this.puntosVisitante,
@@ -333,6 +420,7 @@ public final class Enfrentamiento {
                 EstadoEnfrentamiento.CONVOCATORIA_ABIERTA,
                 elegida.obtenerFechaPropuesta(),
                 this.pistas,
+                this.sedeAlternativaJornada,
                 this.urlFotoActa,
                 this.puntosLocal,
                 this.puntosVisitante,
@@ -358,6 +446,7 @@ public final class Enfrentamiento {
                 EstadoEnfrentamiento.FECHA_FIJADA,
                 fechaDefinitiva,
                 pistas,
+                this.sedeAlternativaJornada,
                 this.urlFotoActa,
                 this.puntosLocal,
                 this.puntosVisitante,
@@ -448,6 +537,7 @@ public final class Enfrentamiento {
                 EstadoEnfrentamiento.ALINEACION_CERRADA,
                 this.fechaDefinitiva,
                 this.pistas,
+                this.sedeAlternativaJornada,
                 this.urlFotoActa,
                 this.puntosLocal,
                 this.puntosVisitante,
@@ -538,6 +628,7 @@ public final class Enfrentamiento {
                 EstadoEnfrentamiento.FINALIZADO_CONFIRMADO,
                 this.fechaDefinitiva,
                 this.pistas,
+                this.sedeAlternativaJornada,
                 nuevaUrlFotoActa.trim(),
                 victoriasLocal,
                 victoriasVisitante,
@@ -655,6 +746,7 @@ public final class Enfrentamiento {
                 EstadoEnfrentamiento.EN_DISPUTA,
                 this.fechaDefinitiva,
                 this.pistas,
+                this.sedeAlternativaJornada,
                 this.urlFotoActa,
                 this.puntosLocal,
                 this.puntosVisitante,
@@ -699,6 +791,7 @@ public final class Enfrentamiento {
                 EstadoEnfrentamiento.FINALIZADO,
                 this.fechaDefinitiva,
                 this.pistas,
+                this.sedeAlternativaJornada,
                 this.urlFotoActa,
                 victoriasLocal,
                 victoriasVisitante,
@@ -709,6 +802,17 @@ public final class Enfrentamiento {
         );
     }
 
+    /**
+     * Propiedad calculada que devuelve la sede alternativa de la jornada si no está vacía,
+     * o la sede oficial (pistas) en caso contrario.
+     */
+    public String obtenerSedeEfectivaJuego() {
+        if (this.sedeAlternativaJornada != null && !this.sedeAlternativaJornada.isBlank()) {
+            return this.sedeAlternativaJornada;
+        }
+        return this.pistas != null ? this.pistas : "";
+    }
+
     public UUID obtenerId() { return id; }
     public UUID obtenerDivisionId() { return divisionId; }
     public UUID obtenerEquipoLocalId() { return equipoLocalId; }
@@ -717,6 +821,7 @@ public final class Enfrentamiento {
     public EstadoEnfrentamiento obtenerEstado() { return estado; }
     public LocalDateTime obtenerFechaDefinitiva() { return fechaDefinitiva; }
     public String obtenerPistas() { return pistas; }
+    public String obtenerSedeAlternativaJornada() { return sedeAlternativaJornada; }
     public String obtenerUrlFotoActa() { return urlFotoActa; }
     public int obtenerPuntosLocal() { return puntosLocal; }
     public int obtenerPuntosVisitante() { return puntosVisitante; }
@@ -756,6 +861,7 @@ public final class Enfrentamiento {
                 ", visitante=" + equipoVisitanteId +
                 ", jornada=" + numeroJornada +
                 ", estado=" + estado +
+                ", sedeEfectiva='" + obtenerSedeEfectivaJuego() + '\'' +
                 ", puntos=" + puntosLocal + "-" + puntosVisitante +
                 ", actaConfirmada=" + actaConfirmada +
                 '}';

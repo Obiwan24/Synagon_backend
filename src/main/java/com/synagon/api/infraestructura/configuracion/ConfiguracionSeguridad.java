@@ -17,8 +17,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 /**
- * Configuración de seguridad HTTP sin estado y CORS para permitir el acceso público
- * al flujo de registro de usuarios y a los recursos de prueba desde clientes Android/iOS.
+ * Configuración de seguridad HTTP sin estado y CORS para permitir el acceso desde el cliente KMP
+ * (Android, iOS, Desktop, Web) al Ágora Principal, gestión de ligas, usuarios y jornadas.
  */
 @Configuration
 @EnableWebSecurity
@@ -40,7 +40,8 @@ public class ConfiguracionSeguridad {
                 .authorizeHttpRequests(autorizacion -> autorizacion
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/usuarios/registro").permitAll()
-                        .requestMatchers("/api/v1/usuarios/**", "/api/v1/acceso/**").permitAll()
+                        .requestMatchers("/api/v1/agora/**").permitAll()
+                        .requestMatchers("/api/v1/usuarios/**", "/api/v1/acceso/**", "/api/v1/jornadas/**").permitAll()
                         .requestMatchers("/api/**").permitAll()
                         .anyRequest().permitAll()
                 );

@@ -32,6 +32,9 @@ public class EntidadUsuario {
     @Column(name = "email", nullable = false, unique = true, length = 255)
     private String email;
 
+    @Column(name = "dni", unique = true, length = 20)
+    private String dni;
+
     @Column(name = "telefono", length = 30)
     private String telefono;
 
@@ -41,6 +44,12 @@ public class EntidadUsuario {
 
     @Column(name = "contrasena_hash", length = 255)
     private String contrasenaHash;
+
+    @Column(name = "requiere_cambio_password", nullable = false)
+    private boolean requiereCambioPassword;
+
+    @Column(name = "primer_acceso_completado", nullable = false)
+    private boolean primerAccesoCompletado;
 
     @Column(name = "acepto_privacidad", nullable = false)
     private boolean aceptoPrivacidad;
@@ -63,9 +72,12 @@ public class EntidadUsuario {
             String nombre,
             String apellidos,
             String email,
+            String dni,
             String telefono,
             RolUsuario rol,
             String contrasenaHash,
+            boolean requiereCambioPassword,
+            boolean primerAccesoCompletado,
             boolean aceptoPrivacidad,
             OffsetDateTime fechaAceptacionPrivacidad,
             OffsetDateTime creadoEn,
@@ -75,12 +87,43 @@ public class EntidadUsuario {
         this.nombre = Objects.requireNonNull(nombre);
         this.apellidos = Objects.requireNonNull(apellidos);
         this.email = Objects.requireNonNull(email);
+        this.dni = dni;
         this.telefono = telefono;
         this.rol = Objects.requireNonNull(rol);
         this.contrasenaHash = contrasenaHash;
+        this.requiereCambioPassword = requiereCambioPassword;
+        this.primerAccesoCompletado = primerAccesoCompletado;
         this.aceptoPrivacidad = aceptoPrivacidad;
         this.fechaAceptacionPrivacidad = fechaAceptacionPrivacidad;
         this.creadoEn = creadoEn != null ? creadoEn : OffsetDateTime.now();
+        this.actualizadoEn = actualizadoEn != null ? actualizadoEn : OffsetDateTime.now();
+    }
+
+    public void actualizarDatos(
+            String nombre,
+            String apellidos,
+            String email,
+            String dni,
+            String telefono,
+            RolUsuario rol,
+            String contrasenaHash,
+            boolean requiereCambioPassword,
+            boolean primerAccesoCompletado,
+            boolean aceptoPrivacidad,
+            OffsetDateTime fechaAceptacionPrivacidad,
+            OffsetDateTime actualizadoEn
+    ) {
+        this.nombre = Objects.requireNonNull(nombre);
+        this.apellidos = Objects.requireNonNull(apellidos);
+        this.email = Objects.requireNonNull(email);
+        this.dni = dni;
+        this.telefono = telefono;
+        this.rol = Objects.requireNonNull(rol);
+        this.contrasenaHash = contrasenaHash;
+        this.requiereCambioPassword = requiereCambioPassword;
+        this.primerAccesoCompletado = primerAccesoCompletado;
+        this.aceptoPrivacidad = aceptoPrivacidad;
+        this.fechaAceptacionPrivacidad = fechaAceptacionPrivacidad;
         this.actualizadoEn = actualizadoEn != null ? actualizadoEn : OffsetDateTime.now();
     }
 
@@ -88,9 +131,12 @@ public class EntidadUsuario {
     public String obtenerNombre() { return nombre; }
     public String obtenerApellidos() { return apellidos; }
     public String obtenerEmail() { return email; }
+    public String obtenerDni() { return dni; }
     public String obtenerTelefono() { return telefono; }
     public RolUsuario obtenerRol() { return rol; }
     public String obtenerContrasenaHash() { return contrasenaHash; }
+    public boolean requiereCambioPassword() { return requiereCambioPassword; }
+    public boolean haCompletadoPrimerAcceso() { return primerAccesoCompletado; }
     public boolean haAceptadoPrivacidad() { return aceptoPrivacidad; }
     public OffsetDateTime obtenerFechaAceptacionPrivacidad() { return fechaAceptacionPrivacidad; }
     public OffsetDateTime obtenerCreadoEn() { return creadoEn; }

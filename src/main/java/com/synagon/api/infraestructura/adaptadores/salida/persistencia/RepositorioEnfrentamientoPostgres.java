@@ -70,6 +70,7 @@ public class RepositorioEnfrentamientoPostgres
                 enfrentamiento.obtenerEstado(),
                 mapeador.aOffsetDateTime(enfrentamiento.obtenerFechaDefinitiva()),
                 enfrentamiento.obtenerPistas(),
+                enfrentamiento.obtenerSedeAlternativaJornada(),
                 enfrentamiento.obtenerUrlFotoActa(),
                 enfrentamiento.obtenerPuntosLocal(),
                 enfrentamiento.obtenerPuntosVisitante(),
@@ -101,6 +102,20 @@ public class RepositorioEnfrentamientoPostgres
         }
         return repositorioJpaEnfrentamiento.perteneceJugadorAAlgunEquipoActivo(
                 jugadorId, equipoLocalId, equipoVisitanteId
+        );
+    }
+
+    @Override
+    public boolean esCapitanDeAlgunEquipoDelEnfrentamiento(
+            UUID capitanId,
+            UUID equipoLocalId,
+            UUID equipoVisitanteId
+    ) {
+        if (capitanId == null || equipoLocalId == null || equipoVisitanteId == null) {
+            return false;
+        }
+        return repositorioJpaEnfrentamiento.esCapitanActivoDeAlgunEquipo(
+                capitanId, equipoLocalId, equipoVisitanteId
         );
     }
 

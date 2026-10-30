@@ -9,7 +9,7 @@ import java.util.UUID;
 
 /**
  * DTO de respuesta completa de un enfrentamiento de jornada con sus propuestas,
- * votaciones de disponibilidad, parejas alineadas y acta arbitral.
+ * sede oficial y sede efectiva de juego, votaciones de disponibilidad, parejas alineadas y acta arbitral.
  */
 public record RespuestaEnfrentamiento(
         UUID id,
@@ -20,6 +20,8 @@ public record RespuestaEnfrentamiento(
         EstadoEnfrentamiento estado,
         LocalDateTime fechaDefinitiva,
         String pistas,
+        String sedeAlternativaJornada,
+        String sedeEfectivaJuego,
         String urlFotoActa,
         int puntosLocal,
         int puntosVisitante,
@@ -38,6 +40,8 @@ public record RespuestaEnfrentamiento(
                 dominio.obtenerEstado(),
                 dominio.obtenerFechaDefinitiva(),
                 dominio.obtenerPistas(),
+                dominio.obtenerSedeAlternativaJornada(),
+                dominio.obtenerSedeEfectivaJuego(),
                 dominio.obtenerUrlFotoActa(),
                 dominio.obtenerPuntosLocal(),
                 dominio.obtenerPuntosVisitante(),

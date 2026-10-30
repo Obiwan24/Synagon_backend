@@ -60,6 +60,14 @@ public class EntidadMiembroEquipo {
         this.actualizadoEn = actualizadoEn != null ? actualizadoEn : OffsetDateTime.now();
     }
 
+    public void reactivarMembresia(boolean comoCapitan, OffsetDateTime ahora) {
+        this.activo = true;
+        if (comoCapitan) {
+            this.esCapitan = true;
+        }
+        this.actualizadoEn = ahora != null ? ahora : OffsetDateTime.now();
+    }
+
     public UUID obtenerId() { return id; }
     public UUID obtenerEquipoId() { return equipoId; }
     public UUID obtenerUsuarioId() { return usuarioId; }

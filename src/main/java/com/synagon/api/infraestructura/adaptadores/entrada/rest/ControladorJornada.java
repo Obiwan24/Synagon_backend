@@ -18,7 +18,7 @@ import java.util.UUID;
 
 /**
  * Controlador REST de entrada para la gestión de enfrentamientos, fechas propuestas,
- * votaciones de disponibilidad y convocatorias/alineaciones de cada jornada.
+ * cambios de sede de jornada, votaciones de disponibilidad y convocatorias/alineaciones.
  */
 @RestController
 @RequestMapping("/api/v1/jornadas/enfrentamientos")
@@ -72,6 +72,19 @@ public class ControladorJornada {
         Enfrentamiento actualizado = gestionJornadaCasoUso.fijarFechaDefinitiva(
                 enfrentamientoId,
                 peticion.propuestaFechaElegidaId()
+        );
+        return ResponseEntity.ok(RespuestaEnfrentamiento.desdeDominio(actualizado));
+    }
+
+    @PutMapping("/{enfrentamientoId}/sede")
+    public ResponseEntity<RespuestaEnfrentamiento> actualizarSedeJornada(
+            @PathVariable UUID enfrentamientoId,
+            @Valid @RequestBody PeticionActualizarSedeJornadaDto peticion
+    ) {
+        Enfrentamiento actualizado = gestionJornadaCasoUso.actualizarSedeJornada(
+                enfrentamientoId,
+                peticion.capitanId(),
+                peticion.nuevaSedeAlternativa()
         );
         return ResponseEntity.ok(RespuestaEnfrentamiento.desdeDominio(actualizado));
     }

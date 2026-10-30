@@ -29,12 +29,36 @@ public class MapeadorPersistenciaUsuario {
                 usuario.obtenerNombre(),
                 usuario.obtenerApellidos(),
                 usuario.obtenerEmail(),
+                usuario.obtenerDni(),
                 usuario.obtenerTelefono(),
                 usuario.obtenerRol(),
                 usuario.obtenerContrasenaHash(),
+                usuario.requiereCambioPassword(),
+                usuario.haCompletadoPrimerAcceso(),
                 usuario.haAceptadoPrivacidad(),
                 instanteAceptacion,
                 instanteCreado,
+                ahora
+        );
+    }
+
+    public void actualizarEntidadExistente(EntidadUsuario entidad, Usuario usuario, OffsetDateTime ahora) {
+        OffsetDateTime instanteAceptacion = usuario.obtenerFechaAceptacionPrivacidad() != null
+                ? aOffsetDateTime(usuario.obtenerFechaAceptacionPrivacidad())
+                : entidad.obtenerFechaAceptacionPrivacidad();
+
+        entidad.actualizarDatos(
+                usuario.obtenerNombre(),
+                usuario.obtenerApellidos(),
+                usuario.obtenerEmail(),
+                usuario.obtenerDni(),
+                usuario.obtenerTelefono(),
+                usuario.obtenerRol(),
+                usuario.obtenerContrasenaHash(),
+                usuario.requiereCambioPassword(),
+                usuario.haCompletadoPrimerAcceso(),
+                usuario.haAceptadoPrivacidad(),
+                instanteAceptacion,
                 ahora
         );
     }
@@ -45,9 +69,12 @@ public class MapeadorPersistenciaUsuario {
                 entidad.obtenerNombre(),
                 entidad.obtenerApellidos(),
                 entidad.obtenerEmail(),
+                entidad.obtenerDni(),
                 entidad.obtenerTelefono(),
                 entidad.obtenerContrasenaHash(),
                 entidad.obtenerRol(),
+                entidad.requiereCambioPassword(),
+                entidad.haCompletadoPrimerAcceso(),
                 entidad.haAceptadoPrivacidad(),
                 aLocalDateTime(entidad.obtenerFechaAceptacionPrivacidad()),
                 equipoId,
